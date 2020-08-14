@@ -7,7 +7,7 @@
  */
 /*-----------------------------------------------------------*/
 const u16 config_bt_mesh_node_msg_adv_interval = ADV_SCAN_UNIT(10); // unit: ms
-const u16 config_bt_mesh_node_msg_adv_duration = 100; // unit: ms
+const u16 config_bt_mesh_node_msg_adv_duration = 30; // unit: ms
 
 /**
  * @brief Config proxy connectable adv hardware param

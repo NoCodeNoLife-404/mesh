@@ -34,13 +34,14 @@ static void vendor_status(struct bt_mesh_model *model,
                           struct bt_mesh_msg_ctx *ctx,
                           struct net_buf_simple *buf);
 
-
-static int ack2 = 0;
-static int ack3 = 0;
-static int ack4 = 0;
-static int ack5 = 0;
-static int ack6 = 0;
-static int ack7 = 0;
+static bool ack1 = 0;
+static bool ack2 = 0;
+static bool ack3 = 0;
+static bool ack4 = 0;
+static bool ack5 = 0;
+static bool ack6 = 0;
+static bool ack7 = 0;
+static bool ack8 = 0;
 static short status_publish_last;
 
 //msg back up
@@ -314,6 +315,94 @@ static void client_publish(struct _switch *sw)
     }
     log_info_hexdump(pub_cli->msg->data, MAX_USEFUL_ACCESS_PAYLOAD_SIZE);
 }
+
+
+static void client_republish(struct _switch *sw, u16_t p_addr)
+{
+    int err;
+    struct bt_mesh_model *mod_cli;
+    struct bt_mesh_model_pub *pub_cli;
+
+    mod_cli = mod_cli_sw[sw->sw_num];
+    pub_cli = mod_cli->pub;
+
+    if (pub_cli->addr == BT_MESH_ADDR_UNASSIGNED) {
+        log_info("repub_cli->addr == BT_MESH_ADDR_UNASSIGNED");
+        return;
+    }
+
+    pub_cli->addr = p_addr;
+
+    log_info("Republish to Remote 0x%04x onoff 0x%04x sw_num 0x%04x\n",
+              pub_cli->addr, sw->onoff_state, sw->sw_num);
+
+    bt_mesh_model_msg_init(pub_cli->msg, BT_MESH_VENDOR_MODEL_OP_SET);
+    buffer_add_u8_at_tail(pub_cli->msg, sw->onoff_state);
+    buffer_memset(pub_cli->msg, REMAIN_DATA_VALUE, REMAIN_DATA_LEN);
+
+    err = bt_mesh_model_publish(mod_cli);
+    if (err) {
+        log_info("bt_mesh_model_publish err %d\n", err);
+    }
+    log_info_hexdump(pub_cli->msg->data, MAX_USEFUL_ACCESS_PAYLOAD_SIZE);
+}
+
+
+
+void republish_handle(struct _switch *sw, u8 buf)
+{
+    u16_t addr;
+
+    if((buf&0x80) == 0)
+    {
+        addr = 0x0008;
+        log_info("\n  republish addr = 0x%x  \n", addr);
+        client_republish(sw, addr);
+    }
+    if((buf&0x40) == 0)
+    {
+        addr = 0x0007;
+        log_info("\n  republish addr = 0x%x  \n", addr);
+        client_republish(sw, addr);
+    }
+    if((buf&0x20) == 0)
+    {
+        addr = 0x0006;
+        log_info("\n  republish addr = 0x%x  \n", addr);
+        client_republish(sw, addr);
+    }
+    if((buf&0x10) == 0)
+    {
+        addr = 0x0005;
+        log_info("\n  republish addr = 0x%x  \n", addr);
+        client_republish(sw, addr);
+    }
+    if((buf&0x08) == 0)
+    {
+        addr = 0x0004;
+        log_info("\n  republish addr = 0x%x  \n", addr);
+        client_republish(sw, addr);
+    }
+    if((buf&0x04) == 0)
+    {
+        addr = 0x0003;
+        log_info("\n  republish addr = 0x%x  \n", addr);
+        client_republish(sw, addr);
+    }
+    if((buf&0x02) == 0)
+    {
+        addr = 0x0002;
+        log_info("\n  republish addr = 0x%x  \n", addr);
+        client_republish(sw, addr);
+    }
+    if((buf&0x01) == 0)
+    {
+        addr = 0x0001;
+        log_info("\n  republish addr = 0x%x  \n", addr);
+        client_republish(sw, addr);
+    }
+}
+
 static void vendor_status(struct bt_mesh_model *model,
                           struct bt_mesh_msg_ctx *ctx,
                           struct net_buf_simple *buf)
@@ -321,54 +410,64 @@ static void vendor_status(struct bt_mesh_model *model,
     int switch_addr = ctx->addr;
     u8_t state;
 
-    log_info("receive vendor server message len except opcode =0x%x", buf->len);
+//    log_info("receive vendor server message len except opcode =0x%x", buf->len);
     log_info_hexdump(buf->data, buf->len);
-
 
     state = buffer_pull_u8_from_head(buf);
 
-    log_info("\n    the addr = 0x%x, ack2 = %d, ack3 = %d, ack4 = %d, ack5 = %d, ack6 = %d, ack7 = %d     \n", ctx->addr, ack2, ack3, ack4, ack5, ack6, ack7);
-    log_info("Local Node 0x%04x receive ACK from Remote Node 0x%04x with led 0x%02x\n",
-             bt_mesh_model_elem(model)->addr, ctx->addr, state);
+//    log_info("Local Node 0x%04x receive ACK from Remote Node 0x%04x with led 0x%02x\n", bt_mesh_model_elem(model)->addr, ctx->addr, state);
+
+    if(state == status_publish_last)
+    {
+        log_info("\n    old msg abandon     \n");
+        return;
+    }
 
     switch (switch_addr)
     {
+        case 1:
+                log_info("ack1 = 1\n");ack1 = 1;break;
         case 2:
-             log_info("ack2 = 1\n");ack2 = 1;break;
+                log_info("ack2 = 1\n");ack2 = 1;break;
         case 3:
-             log_info("ack3 = 1\n");ack3 = 1;break;
+                log_info("ack3 = 1\n");ack3 = 1;break;
         case 4:
-             log_info("ack4 = 1\n");ack4 = 1;break;
+                log_info("ack4 = 1\n");ack4 = 1;break;
         case 5:
-             log_info("ack5 = 1\n");ack5 = 1;break;
+                log_info("ack5 = 1\n");ack5 = 1;break;
         case 6:
-             log_info("ack6 = 1\n");ack6 = 1;break;
+                log_info("ack6 = 1\n");ack6 = 1;break;
         case 7:
-             log_info("ack7 = 1\n");ack7 = 1;break;
+                log_info("ack7 = 1\n");ack7 = 1;break;
+        case 8:
+                log_info("ack8 = 1\n");ack8 = 1;break;
         default:
             break;
     }
-    if ((ack2&&ack3&&ack4&&ack5&&ack6&&ack7) == 0)
-    {
-        if(state = status_publish_last)
-        {
-            return;
-        }
 
-        log_info("\n    republish msg   \n");
-        //重发控制信息
-        client_publish(&sw_republish);
+    log_info("\n    ack_all = %d%d%d%d%d%d%d%d\n", ack8, ack7, ack6, ack5, ack4, ack3, ack2, ack1);
+
+    if ((ack1&&ack2&&ack3&&ack4&&ack5&&ack6&&ack7&&ack8) == 0)
+    {
+
+        u8 ack_buf = (ack8 << 7) + (ack7 << 6) + (ack6 << 5) + (ack5 << 4) + (ack4 << 3) + (ack3 << 2) + (ack2 << 1) + ack1;
+
+        log_info("\n    republish   \n");
+        republish_handle(&sw_republish, ack_buf);
     }
-    else
+    else if ((ack1&&ack2&&ack3&&ack4&&ack5&&ack6&&ack7&&ack8) == 1)
     {
         status_publish_last = state;
         log_info("\n   Got all ack massages  \n");
+        ack1 = 0;
         ack2 = 0;
         ack3 = 0;
         ack4 = 0;
         ack5 = 0;
         ack6 = 0;
         ack7 = 0;
+        ack8 = 0;
+        log_info("\n    finish control, ack_all = %d%d%d%d%d%d%d%d\n", ack1, ack2, ack3, ack4, ack5, ack6, ack7, ack8);
     }
 
 }
@@ -388,7 +487,7 @@ static void button_pressed_worker(struct _switch *sw)
     sw_republish = *sw;
 }
 
-#define NODE_ADDR 0x0001
+#define NODE_ADDR 0x0010
 
 #define GROUP_ADDR 0xc000
 

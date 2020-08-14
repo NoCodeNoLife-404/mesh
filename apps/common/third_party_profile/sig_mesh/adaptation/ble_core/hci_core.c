@@ -18,6 +18,7 @@
 #define LOG_DUMP_ENABLE
 #include "mesh_log.h"
 
+#include "asm/clock.h"
 
 #if ADAPTATION_COMPILE_DEBUG
 

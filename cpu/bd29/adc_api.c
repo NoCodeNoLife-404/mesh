@@ -9,7 +9,7 @@
 #include "asm/power_interface.h"
 #include "jiffies.h"
 
-
+#include "syscfg_id.h"
 static volatile u16 _adc_res;
 static volatile u16 cur_ch_value;
 static u8 cur_ch = 0;
@@ -372,19 +372,34 @@ void _adc_init(u32 sys_lvd_en)
     /*  */
     /* while(1); */
 }
+void adc_test();
+
+typedef struct {
+    u16 sysvdd_voltage[16];
+    u16 vdc13_voltage[8];
+    u16 vddio_voltage[4][8];
+    }
+pmu_voltage_type;
+static pmu_voltage_type pmu_voltage;
 
 void adc_init()
 {
+    int vm_len = syscfg_read(VM_PMU_VOLTAGE, (u8 *)&pmu_voltage, sizeof(pmu_voltage_type));
+
+    printf("\n        vm_len = %d     \n", vm_len);
+
     check_pmu_voltage();
 
     _adc_init(1);
+
+    adc_test();
 }
 
 void adc_test()
 {
     /* printf("\n\n%s() chip_id :%x\n", __func__, get_chip_id()); */
-    /* printf("%s() vbg trim:%x\n", __func__, get_vbg_trim());    */
-    /* printf("%s() vbat trim:%x\n", __func__, get_vbat_trim());  */
+     printf("%s() vbg trim:%x\n", __func__, get_vbg_trim());        //
+     printf("%s() vbat trim:%x\n", __func__, get_vbat_trim());      //
 
     /* printf("\n\nWLA_CON0 %x\n", JL_ANA->WLA_CON0); */
     /* printf("WLA_CON9 %x\n", JL_ANA->WLA_CON9); */

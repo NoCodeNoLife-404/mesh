@@ -2,19 +2,34 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Release" />
-	<File name="..\..\examples\vendor_server.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="..\..\..\..\include_lib\system\syscfg_id.h" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="5990" topLine="224" />
+			<Cursor1 position="1852" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="..\..\api\model_api.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="..\..\..\..\cpu\bd29\setup.c" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="602" topLine="0" />
+			<Cursor1 position="2514" topLine="109" />
 		</Cursor>
 	</File>
-	<File name="..\..\examples\vendor_client.c" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="..\..\..\..\include_lib\system\debug.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="10503" topLine="320" />
+			<Cursor1 position="3388" topLine="86" />
+		</Cursor>
+	</File>
+	<File name="..\..\..\..\include_lib\driver\cpu\bd29\asm\pwm_led.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="4965" topLine="126" />
+		</Cursor>
+	</File>
+	<File name="..\..\..\..\cpu\bd29\adc_api.c" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="8765" topLine="386" />
+		</Cursor>
+	</File>
+	<File name="..\..\..\..\include_lib\system\event.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="4336" topLine="76" />
 		</Cursor>
 	</File>
 	<File name="..\..\..\..\include_lib\driver\cpu\bd29\asm\adc_api.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -22,19 +37,14 @@
 			<Cursor1 position="275" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="board_ac6311_demo_cfg.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="..\..\..\..\include_lib\system\app_core.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="2681" topLine="33" />
+			<Cursor1 position="206" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="..\..\..\common\third_party_profile\sig_mesh\api\mesh_config.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="..\..\..\..\include_lib\driver\cpu\bd29\asm\clock.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="252" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="board_config.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="83" topLine="0" />
+			<Cursor1 position="1942" topLine="54" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

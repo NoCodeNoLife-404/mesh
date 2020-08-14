@@ -31,12 +31,15 @@ static void vendor_set(struct bt_mesh_model *model,
                        struct bt_mesh_msg_ctx *ctx,
                        struct net_buf_simple *buf);
 
+extern uint32_t btctler_get_rand_from_assign_range(uint32_t rand, uint32_t min, uint32_t max);
+extern void pseudo_random_genrate(uint8_t *dest, unsigned size);
+
 /**
  * @brief Config current node features(Relay/Proxy/Friend/Low Power)
  */
 /*-----------------------------------------------------------*/
 #define BT_MESH_FEAT_SUPPORTED_TEMP         ( \
-                                                BT_MESH_FEAT_RELAY | \
+                                                  \
                                                 0 \
                                             )
 #include "feature_correct.h"
@@ -153,6 +156,40 @@ const u8 led_use_port[1] = {
  */
 BT_MESH_MODEL_PUB_DEFINE(vendor_pub_cli, NULL, MAX_USEFUL_ACCESS_PAYLOAD_SIZE);
 
+
+static void respond_messsage_schedule(u16 *delay, u16 *duration, void *cb_data)
+{
+    /*  Mesh_v1.0 <3.7.4.1 Transmitting an access message>
+     *
+     *	  If the message is sent in response to a received message
+     *  that was sent to a unicast address, the node should transmit
+     *  the response message with a random delay between 20 and 50 milliseconds.
+     *
+     *    If the message is sent in response to a received message
+     *  that was sent to a group address or a virtual address,
+     *  the node should transmit the response message with
+     *  a random delay between 20 and 500 milliseconds.
+     */
+    u16 delay_ms;
+    struct bt_mesh_msg_ctx *ctx = cb_data;
+
+    pseudo_random_genrate((u8 *)&delay_ms, 2);
+    if (BT_MESH_ADDR_IS_UNICAST(ctx->recv_dst)) {
+        delay_ms = btctler_get_rand_from_assign_range(delay_ms, 20, 50);
+    } else {
+        delay_ms = btctler_get_rand_from_assign_range(delay_ms, 20, 150);
+    }
+
+    *delay = delay_ms;
+    log_info("respond_messsage delay =%u ms", delay_ms);
+}
+
+static const struct bt_mesh_send_cb rsp_msg_cb = {
+    .user_intercept = respond_messsage_schedule,
+};
+
+
+
 /*
  * Models in an element must have unique op codes.
  *
@@ -260,7 +297,7 @@ static void vendor_set(struct bt_mesh_model *model,
     }
 }
 
-#define NODE_ADDR 0x0007
+#define NODE_ADDR 0x0008
 
 #define GROUP_ADDR 0xc000
 
@@ -323,8 +360,14 @@ void input_key_handler(u8 key_status, u8 key_number)
 
     log_info("key_number=0x%x", key_number);
 
-    if ((key_number == 2) && (key_status == KEY_EVENT_LONG)) {
+    if ((key_number == 0) && (key_status == KEY_EVENT_LONG)) {
         log_info("\n  <bt_mesh_reset> \n");
+        bt_mesh_reset();
+        return;
+    }
+
+    if ((key_number == 4) && (key_status == KEY_EVENT_CLICK)) {
+        log_info("\n  <NODE_ADDR = 0x%x> \n", NODE_ADDR);
         bt_mesh_reset();
         return;
     }
